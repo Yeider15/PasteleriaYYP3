@@ -5,7 +5,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitRecetaClient {
 
-    private const val BASE_URL = "https://www.themealdb.com/api/json/v1/1/"
+    private const val BASE_URL =  "http://192.168.1.7:9090/"
+
 
     val instance: Retrofit by lazy {
         Retrofit.Builder()
