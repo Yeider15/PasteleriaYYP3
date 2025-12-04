@@ -2,7 +2,6 @@ package com.example.pasteleriayy.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -23,40 +22,15 @@ fun FormularioValidacion(navController: NavController, modifier: Modifier = Modi
     val viewModel: RegistroViewModel = viewModel()
     val mensaje by viewModel.mensaje.collectAsState()
 
-    var mostrarMenu by remember { mutableStateOf(false) }
-
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Registro de Usuario") },
-
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Volver"
-                        )
-                    }
-                },
-
-                actions = {
-                    IconButton(onClick = { mostrarMenu = true }) {
-                        Icon(
-                            imageVector = Icons.Filled.MoreVert,
-                            contentDescription = "Menú"
-                        )
-                    }
-
-                    DropdownMenu(
-                        expanded = mostrarMenu,
-                        onDismissRequest = { mostrarMenu = false }
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("Administrar Usuarios") },
-                            onClick = {
-                                mostrarMenu = false
-                                navController.navigate("crud_usuarios")
-                            }
                         )
                     }
                 }
@@ -85,53 +59,35 @@ fun FormularioValidacion(navController: NavController, modifier: Modifier = Modi
 
             OutlinedTextField(
                 value = nombre,
-                onValueChange = {
-                    nombre = it
-                    nombreError = ""
-                },
+                onValueChange = { nombre = it; nombreError = "" },
                 isError = nombreError.isNotEmpty(),
                 label = { Text("Nombre") },
                 modifier = Modifier.fillMaxWidth()
             )
-
-            if (nombreError.isNotEmpty()) {
-                Text(nombreError, color = Color.Red)
-            }
+            if (nombreError.isNotEmpty()) Text(nombreError, color = Color.Red)
 
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
                 value = correo,
-                onValueChange = {
-                    correo = it
-                    correoError = ""
-                },
+                onValueChange = { correo = it; correoError = "" },
                 isError = correoError.isNotEmpty(),
                 label = { Text("Correo") },
                 modifier = Modifier.fillMaxWidth()
             )
-
-            if (correoError.isNotEmpty()) {
-                Text(correoError, color = Color.Red)
-            }
+            if (correoError.isNotEmpty()) Text(correoError, color = Color.Red)
 
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
                 value = contrasena,
-                onValueChange = {
-                    contrasena = it
-                    contrasenaError = ""
-                },
+                onValueChange = { contrasena = it; contrasenaError = "" },
                 isError = contrasenaError.isNotEmpty(),
                 label = { Text("Contraseña") },
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth()
             )
-
-            if (contrasenaError.isNotEmpty()) {
-                Text(contrasenaError, color = Color.Red)
-            }
+            if (contrasenaError.isNotEmpty()) Text(contrasenaError, color = Color.Red)
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -144,9 +100,9 @@ fun FormularioValidacion(navController: NavController, modifier: Modifier = Modi
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            // Botón Registrar Usuario
             Button(
                 onClick = {
-
                     nombreError = ""
                     correoError = ""
                     contrasenaError = ""
@@ -156,10 +112,7 @@ fun FormularioValidacion(navController: NavController, modifier: Modifier = Modi
                     if (!correo.contains("@")) correoError = "Correo inválido"
                     if (contrasena.length < 6) contrasenaError = "Mínimo 6 caracteres"
 
-                    val valido =
-                        nombreError.isEmpty() &&
-                                correoError.isEmpty() &&
-                                contrasenaError.isEmpty()
+                    val valido = nombreError.isEmpty() && correoError.isEmpty() && contrasenaError.isEmpty()
 
                     if (valido) {
                         val user = Usuario(
@@ -169,21 +122,39 @@ fun FormularioValidacion(navController: NavController, modifier: Modifier = Modi
                             contrasena = contrasena,
                             telefono = if (telefono.isNotBlank()) telefono else null
                         )
-
-                        viewModel.registrarUsuario(user)
+                        viewModel.registrarUsuario(user) { exito ->
+                            if (exito) {
+                                navController.navigate("login") {
+                                    popUpTo("registro") { inclusive = true }
+                                }
+                            }
+                        }
                     }
-
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Registrar Usuario")
             }
 
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Botón Iniciar Sesión
+            TextButton(
+                onClick = {
+                    navController.navigate("login") {
+                        popUpTo("registro") { inclusive = true }
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Iniciar Sesión")
+            }
+
             if (mensaje.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = mensaje,
-                    color = if (mensaje.contains("exito", ignoreCase = true)) Color.Green else Color.Red
+                    color = if (mensaje.contains("éxito", ignoreCase = true)) Color.Green else Color.Red
                 )
             }
         }
