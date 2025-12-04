@@ -7,14 +7,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.pasteleriayy.viewmodel.RegistroViewModel
 
 @Composable
 fun LoginScreen(
     navController: NavController,
-    viewModel: RegistroViewModel = viewModel()
+    viewModel: RegistroViewModel   // ← 🔥 YA NO SE CREA viewModel() AQUÍ
 ) {
 
     var correo by remember { mutableStateOf("") }
@@ -57,7 +56,7 @@ fun LoginScreen(
             onClick = {
                 viewModel.login(correo, contrasena) { exito ->
                     if (exito) {
-                        navController.navigate("crud_usuarios") {
+                        navController.navigate("perfil") {
                             popUpTo("login") { inclusive = true }
                         }
                     }

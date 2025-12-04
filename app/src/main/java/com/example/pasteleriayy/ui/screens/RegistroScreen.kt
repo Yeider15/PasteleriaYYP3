@@ -11,15 +11,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pasteleriayy.model.Usuario
 import com.example.pasteleriayy.viewmodel.RegistroViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FormularioValidacion(navController: NavController, modifier: Modifier = Modifier) {
+fun FormularioValidacion(
+    navController: NavController,
+    viewModel: RegistroViewModel,
+    modifier: Modifier = Modifier
+) {
 
-    val viewModel: RegistroViewModel = viewModel()
     val mensaje by viewModel.mensaje.collectAsState()
 
     Scaffold(
@@ -100,7 +102,6 @@ fun FormularioValidacion(navController: NavController, modifier: Modifier = Modi
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Botón Registrar Usuario
             Button(
                 onClick = {
                     nombreError = ""
@@ -138,7 +139,6 @@ fun FormularioValidacion(navController: NavController, modifier: Modifier = Modi
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón Iniciar Sesión
             TextButton(
                 onClick = {
                     navController.navigate("login") {

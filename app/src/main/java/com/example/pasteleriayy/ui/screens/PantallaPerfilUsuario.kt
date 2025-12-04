@@ -9,7 +9,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pasteleriayy.viewmodel.RegistroViewModel
 import com.example.pasteleriayy.model.Usuario
 
@@ -17,7 +16,7 @@ import com.example.pasteleriayy.model.Usuario
 @Composable
 fun PantallaPerfilUsuario(
     navController: NavController,
-    viewModel: RegistroViewModel = viewModel()
+    viewModel: RegistroViewModel     // ← 🔥 YA NO CREA viewModel()
 ) {
     val usuario = viewModel.usuarioLogeado.collectAsState().value
     val mensaje = viewModel.mensaje.collectAsState().value
@@ -25,14 +24,18 @@ fun PantallaPerfilUsuario(
     var mostrandoLoading by remember { mutableStateOf(false) }
     var snackbarVisible by remember { mutableStateOf(false) }
 
+
     if (usuario == null) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
             CircularProgressIndicator()
         }
         return
     }
 
-    // Campos editables
+
     var nombre by remember { mutableStateOf(usuario.nombre) }
     var correo by remember { mutableStateOf(usuario.correo) }
     var contrasena by remember { mutableStateOf(usuario.contrasena) }
@@ -42,6 +45,8 @@ fun PantallaPerfilUsuario(
     var errorNombre by remember { mutableStateOf(false) }
     var errorCorreo by remember { mutableStateOf(false) }
     var errorContrasena by remember { mutableStateOf(false) }
+
+    val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
         topBar = {
@@ -53,18 +58,16 @@ fun PantallaPerfilUsuario(
             )
         },
         snackbarHost = {
-            SnackbarHost(
-                hostState = SnackbarHostState().apply {
-                    if (snackbarVisible) {
-                        Snackbar {
-                            Text(mensaje)
-                        }
-                        snackbarVisible = false
-                    }
-                }
-            )
+            SnackbarHost(hostState = snackbarHostState)
         }
     ) { padding ->
+
+        LaunchedEffect(snackbarVisible) {
+            if (snackbarVisible) {
+                snackbarHostState.showSnackbar(mensaje)
+                snackbarVisible = false
+            }
+        }
 
         Column(
             modifier = Modifier
@@ -73,6 +76,7 @@ fun PantallaPerfilUsuario(
                 .padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+
 
             OutlinedTextField(
                 value = nombre,
@@ -86,6 +90,7 @@ fun PantallaPerfilUsuario(
             )
             if (errorNombre) Text("El nombre es obligatorio", color = Color.Red)
 
+
             OutlinedTextField(
                 value = correo,
                 onValueChange = {
@@ -98,11 +103,12 @@ fun PantallaPerfilUsuario(
             )
             if (errorCorreo) Text("Correo inválido", color = Color.Red)
 
+
             OutlinedTextField(
                 value = contrasena,
                 onValueChange = {
                     contrasena = it
-                    errorContrasena = it.length < 4
+                    errorContrasena = contrasena.length < 4
                 },
                 isError = errorContrasena,
                 label = { Text("Contraseña") },
@@ -111,6 +117,7 @@ fun PantallaPerfilUsuario(
             )
             if (errorContrasena) Text("La contraseña debe tener mínimo 4 caracteres", color = Color.Red)
 
+
             OutlinedTextField(
                 value = telefono,
                 onValueChange = { telefono = it },
@@ -118,7 +125,7 @@ fun PantallaPerfilUsuario(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // ===== GUARDAR CAMBIOS =====
+
             Button(
                 onClick = {
                     if (nombre.isBlank() || !correo.contains("@") || contrasena.length < 4) {
@@ -151,7 +158,7 @@ fun PantallaPerfilUsuario(
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
             }
 
-            // ===== ELIMINAR CUENTA =====
+
             Button(
                 onClick = {
                     viewModel.eliminarCuenta(usuario.id!!) { ok ->
@@ -166,7 +173,7 @@ fun PantallaPerfilUsuario(
                 Text("Eliminar Cuenta")
             }
 
-            // ===== CERRAR SESIÓN =====
+
             TextButton(
                 onClick = {
                     viewModel.cerrarSesion()

@@ -11,24 +11,31 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pasteleriayy.navigation.AppNavigation
 import com.example.pasteleriayy.ui.components.BottomNavBar
 import com.example.pasteleriayy.ui.theme.PasteleriaYYTheme
+import com.example.pasteleriayy.viewmodel.RegistroViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+
             PasteleriaYYTheme {
-                MainAppStructure()
+                // 🔥 ÚNICO VIEWMODEL COMPARTIDO PARA TODA LA APP
+                val registroViewModel: RegistroViewModel = viewModel()
+
+                MainAppStructure(registroViewModel)
             }
         }
     }
 }
 
 @Composable
-fun MainAppStructure() {
+fun MainAppStructure(registroViewModel: RegistroViewModel) {
+
     val navController = rememberNavController()
     val navBackStackEntry = navController.currentBackStackEntryAsState().value
     val currentRoute = navBackStackEntry?.destination?.route
@@ -41,6 +48,7 @@ fun MainAppStructure() {
     ) { paddingValues ->
         AppNavigation(
             navController = navController,
+            viewModel = registroViewModel,   // ⭐ PASAS EL VIEWMODEL A TODA LA APP
             modifier = Modifier.padding(paddingValues)
         )
     }

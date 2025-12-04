@@ -5,7 +5,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavController
 import com.example.pasteleriayy.ui.screens.*
+import com.example.pasteleriayy.viewmodel.RegistroViewModel
 
 object AppScreens {
     const val MENU = "menu"
@@ -20,6 +23,7 @@ object AppScreens {
 @Composable
 fun AppNavigation(
     navController: NavHostController,
+    viewModel: RegistroViewModel,
     modifier: Modifier = Modifier
 ) {
     NavHost(
@@ -29,15 +33,18 @@ fun AppNavigation(
     ) {
 
         composable(AppScreens.MENU) {
+            // Firma esperada: MenuProductosScreen(navController: NavController)
             MenuProductosScreen(navController = navController)
         }
 
         composable(AppScreens.REGISTRO) {
-            FormularioValidacion(navController = navController)
+            // Firma esperada: FormularioValidacion(navController: NavController, viewModel: RegistroViewModel)
+            FormularioValidacion(navController = navController, viewModel = viewModel)
         }
 
         composable(AppScreens.LOGIN) {
-            LoginScreen(navController = navController)
+            // Firma esperada: LoginScreen(navController: NavController, viewModel: RegistroViewModel)
+            LoginScreen(navController = navController, viewModel = viewModel)
         }
 
         composable(AppScreens.CONTACTO) {
@@ -52,9 +59,9 @@ fun AppNavigation(
             RecetasScreen(navController = navController)
         }
 
-
         composable(AppScreens.PERFIL_USUARIO) {
-            PantallaPerfilUsuario(navController = navController)
+            // Firma esperada: PantallaPerfilUsuario(navController: NavController, viewModel: RegistroViewModel)
+            PantallaPerfilUsuario(navController = navController, viewModel = viewModel)
         }
     }
 }

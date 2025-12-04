@@ -20,10 +20,14 @@ class RegistroViewModel : ViewModel() {
     val usuarioLogeado: StateFlow<Usuario?> = _usuarioLogeado
 
 
+
     fun login(correo: String, contrasena: String, onResult: (Boolean) -> Unit) {
+        _mensaje.value = ""  // limpiar mensaje previo
+
         viewModelScope.launch {
             try {
                 val response = repo.login(LoginRequest(correo, contrasena))
+
                 if (response.isSuccessful && response.body() != null) {
                     _usuarioLogeado.value = response.body()
                     _mensaje.value = "Inicio de sesión exitoso"
@@ -32,6 +36,7 @@ class RegistroViewModel : ViewModel() {
                     _mensaje.value = "Credenciales incorrectas"
                     onResult(false)
                 }
+
             } catch (e: Exception) {
                 _mensaje.value = "Error de conexión"
                 onResult(false)
@@ -40,10 +45,14 @@ class RegistroViewModel : ViewModel() {
     }
 
 
+
     fun registrarUsuario(usuario: Usuario, onFinish: (Boolean) -> Unit) {
+        _mensaje.value = ""
+
         viewModelScope.launch {
             try {
                 val response = repo.crear(usuario)
+
                 if (response.isSuccessful) {
                     _mensaje.value = "Usuario registrado con éxito"
                     onFinish(true)
@@ -51,26 +60,7 @@ class RegistroViewModel : ViewModel() {
                     _mensaje.value = "Error al registrar"
                     onFinish(false)
                 }
-            } catch (e: Exception) {
-                _mensaje.value = "Error al registrar"
-                onFinish(false)
-            }
-        }
-    }
 
-
-    fun actualizarUsuario(id: Long, usuario: Usuario, onFinish: (Boolean) -> Unit) {
-        viewModelScope.launch {
-            try {
-                val response = repo.actualizar(id, usuario)
-                if (response.isSuccessful) {
-                    _usuarioLogeado.value = response.body()
-                    _mensaje.value = "Usuario actualizado"
-                    onFinish(true)
-                } else {
-                    _mensaje.value = "Error al actualizar"
-                    onFinish(false)
-                }
             } catch (e: Exception) {
                 _mensaje.value = "Error de conexión"
                 onFinish(false)
@@ -79,10 +69,39 @@ class RegistroViewModel : ViewModel() {
     }
 
 
+
+    fun actualizarUsuario(id: Long, usuario: Usuario, onFinish: (Boolean) -> Unit) {
+        _mensaje.value = ""
+
+        viewModelScope.launch {
+            try {
+                val response = repo.actualizar(id, usuario)
+
+                if (response.isSuccessful && response.body() != null) {
+                    _usuarioLogeado.value = response.body()
+                    _mensaje.value = "Usuario actualizado"
+                    onFinish(true)
+                } else {
+                    _mensaje.value = "Error al actualizar"
+                    onFinish(false)
+                }
+
+            } catch (e: Exception) {
+                _mensaje.value = "Error de conexión"
+                onFinish(false)
+            }
+        }
+    }
+
+
+
     fun eliminarCuenta(id: Long, onFinish: (Boolean) -> Unit) {
+        _mensaje.value = ""
+
         viewModelScope.launch {
             try {
                 val response = repo.eliminar(id)
+
                 if (response.isSuccessful) {
                     _usuarioLogeado.value = null
                     _mensaje.value = "Cuenta eliminada"
@@ -91,17 +110,19 @@ class RegistroViewModel : ViewModel() {
                     _mensaje.value = "Error al eliminar"
                     onFinish(false)
                 }
+
             } catch (e: Exception) {
                 _mensaje.value = "Error de conexión"
                 onFinish(false)
             }
         }
     }
+
+
+
     fun cerrarSesion() {
         _usuarioLogeado.value = null
         _mensaje.value = "Sesión cerrada"
     }
-
-
 
 }
