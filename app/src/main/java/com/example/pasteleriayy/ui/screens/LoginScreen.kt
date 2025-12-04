@@ -13,7 +13,7 @@ import com.example.pasteleriayy.viewmodel.RegistroViewModel
 @Composable
 fun LoginScreen(
     navController: NavController,
-    viewModel: RegistroViewModel   // ← 🔥 YA NO SE CREA viewModel() AQUÍ
+    viewModel: RegistroViewModel
 ) {
 
     var correo by remember { mutableStateOf("") }

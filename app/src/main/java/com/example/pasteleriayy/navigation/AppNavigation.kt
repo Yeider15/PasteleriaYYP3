@@ -33,17 +33,14 @@ fun AppNavigation(
     ) {
 
         composable(AppScreens.MENU) {
-            // Firma esperada: MenuProductosScreen(navController: NavController)
             MenuProductosScreen(navController = navController)
         }
 
         composable(AppScreens.REGISTRO) {
-            // Firma esperada: FormularioValidacion(navController: NavController, viewModel: RegistroViewModel)
             FormularioValidacion(navController = navController, viewModel = viewModel)
         }
 
         composable(AppScreens.LOGIN) {
-            // Firma esperada: LoginScreen(navController: NavController, viewModel: RegistroViewModel)
             LoginScreen(navController = navController, viewModel = viewModel)
         }
 
@@ -60,7 +57,6 @@ fun AppNavigation(
         }
 
         composable(AppScreens.PERFIL_USUARIO) {
-            // Firma esperada: PantallaPerfilUsuario(navController: NavController, viewModel: RegistroViewModel)
             PantallaPerfilUsuario(navController = navController, viewModel = viewModel)
         }
     }

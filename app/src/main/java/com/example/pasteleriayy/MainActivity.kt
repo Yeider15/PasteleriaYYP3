@@ -24,7 +24,6 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             PasteleriaYYTheme {
-                // 🔥 ÚNICO VIEWMODEL COMPARTIDO PARA TODA LA APP
                 val registroViewModel: RegistroViewModel = viewModel()
 
                 MainAppStructure(registroViewModel)
@@ -48,7 +47,7 @@ fun MainAppStructure(registroViewModel: RegistroViewModel) {
     ) { paddingValues ->
         AppNavigation(
             navController = navController,
-            viewModel = registroViewModel,   // ⭐ PASAS EL VIEWMODEL A TODA LA APP
+            viewModel = registroViewModel,
             modifier = Modifier.padding(paddingValues)
         )
     }

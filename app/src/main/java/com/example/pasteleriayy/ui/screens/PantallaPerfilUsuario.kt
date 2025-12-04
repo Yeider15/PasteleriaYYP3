@@ -16,7 +16,7 @@ import com.example.pasteleriayy.model.Usuario
 @Composable
 fun PantallaPerfilUsuario(
     navController: NavController,
-    viewModel: RegistroViewModel     // ← 🔥 YA NO CREA viewModel()
+    viewModel: RegistroViewModel
 ) {
     val usuario = viewModel.usuarioLogeado.collectAsState().value
     val mensaje = viewModel.mensaje.collectAsState().value
