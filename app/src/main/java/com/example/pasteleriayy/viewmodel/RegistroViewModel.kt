@@ -9,16 +9,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class RegistroViewModel : ViewModel() {
-
-    private val repo = UsuarioRepository()
+class RegistroViewModel(
+    private val repo: UsuarioRepository = UsuarioRepository()
+) : ViewModel() {
 
     private val _mensaje = MutableStateFlow("")
     val mensaje: StateFlow<String> = _mensaje
 
     private val _usuarioLogeado = MutableStateFlow<Usuario?>(null)
     val usuarioLogeado: StateFlow<Usuario?> = _usuarioLogeado
-
 
 
     fun login(correo: String, contrasena: String, onResult: (Boolean) -> Unit) {
@@ -45,7 +44,6 @@ class RegistroViewModel : ViewModel() {
     }
 
 
-
     fun registrarUsuario(usuario: Usuario, onFinish: (Boolean) -> Unit) {
         _mensaje.value = ""
 
@@ -67,7 +65,6 @@ class RegistroViewModel : ViewModel() {
             }
         }
     }
-
 
 
     fun actualizarUsuario(id: Long, usuario: Usuario, onFinish: (Boolean) -> Unit) {
@@ -94,7 +91,6 @@ class RegistroViewModel : ViewModel() {
     }
 
 
-
     fun eliminarCuenta(id: Long, onFinish: (Boolean) -> Unit) {
         _mensaje.value = ""
 
@@ -119,10 +115,8 @@ class RegistroViewModel : ViewModel() {
     }
 
 
-
     fun cerrarSesion() {
         _usuarioLogeado.value = null
         _mensaje.value = "Sesión cerrada"
     }
-
 }
