@@ -1,11 +1,16 @@
 package com.example.pasteleriayy.ui.screens
 
+import android.content.Context
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext // IMPORTANTE
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -21,9 +26,10 @@ fun PantallaPerfilUsuario(
     val usuario = viewModel.usuarioLogeado.collectAsState().value
     val mensaje = viewModel.mensaje.collectAsState().value
 
+    val context = LocalContext.current
+
     var mostrandoLoading by remember { mutableStateOf(false) }
     var snackbarVisible by remember { mutableStateOf(false) }
-
 
     if (usuario == null) {
         Box(
@@ -35,13 +41,11 @@ fun PantallaPerfilUsuario(
         return
     }
 
-
     var nombre by remember { mutableStateOf(usuario.nombre) }
     var correo by remember { mutableStateOf(usuario.correo) }
     var contrasena by remember { mutableStateOf(usuario.contrasena) }
     var telefono by remember { mutableStateOf(usuario.telefono ?: "") }
 
-    // Validaciones simples
     var errorNombre by remember { mutableStateOf(false) }
     var errorCorreo by remember { mutableStateOf(false) }
     var errorContrasena by remember { mutableStateOf(false) }
@@ -77,7 +81,6 @@ fun PantallaPerfilUsuario(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
-
             OutlinedTextField(
                 value = nombre,
                 onValueChange = {
@@ -90,7 +93,6 @@ fun PantallaPerfilUsuario(
             )
             if (errorNombre) Text("El nombre es obligatorio", color = Color.Red)
 
-
             OutlinedTextField(
                 value = correo,
                 onValueChange = {
@@ -102,7 +104,6 @@ fun PantallaPerfilUsuario(
                 modifier = Modifier.fillMaxWidth()
             )
             if (errorCorreo) Text("Correo inválido", color = Color.Red)
-
 
             OutlinedTextField(
                 value = contrasena,
@@ -117,7 +118,6 @@ fun PantallaPerfilUsuario(
             )
             if (errorContrasena) Text("La contraseña debe tener mínimo 4 caracteres", color = Color.Red)
 
-
             OutlinedTextField(
                 value = telefono,
                 onValueChange = { telefono = it },
@@ -125,16 +125,13 @@ fun PantallaPerfilUsuario(
                 modifier = Modifier.fillMaxWidth()
             )
 
-
             Button(
                 onClick = {
                     if (nombre.isBlank() || !correo.contains("@") || contrasena.length < 4) {
                         snackbarVisible = true
                         return@Button
                     }
-
                     mostrandoLoading = true
-
                     val actualizado = Usuario(
                         id = usuario.id,
                         nombre = nombre,
@@ -142,7 +139,6 @@ fun PantallaPerfilUsuario(
                         contrasena = contrasena,
                         telefono = if (telefono.isBlank()) null else telefono
                     )
-
                     viewModel.actualizarUsuario(usuario.id!!, actualizado) { ok ->
                         mostrandoLoading = false
                         snackbarVisible = true
@@ -158,9 +154,17 @@ fun PantallaPerfilUsuario(
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
             }
 
-
             Button(
                 onClick = {
+                    val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+
+                    if (Build.VERSION.SDK_INT >= 26) {
+                        vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+                    } else {
+                        @Suppress("DEPRECATION")
+                        vibrator.vibrate(200)
+                    }
+
                     viewModel.eliminarCuenta(usuario.id!!) { ok ->
                         navController.navigate("login") {
                             popUpTo(0)
@@ -172,7 +176,6 @@ fun PantallaPerfilUsuario(
             ) {
                 Text("Eliminar Cuenta")
             }
-
 
             TextButton(
                 onClick = {
