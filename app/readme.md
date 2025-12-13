@@ -13,6 +13,7 @@ Funcionalidades Implementadas
 - Estructura Modular: Organización clara del proyecto con separación de la lógica y las vistas.
 - Diseño y Navegación: Interfaz visual organizada con navegación funcional entre las vistas (Registro, Menú de Productos, Contacto, Promociones).
 - Formularios Validados: Formularios con validaciones de los campos, y retroalimentación visual de errores.
+- CRUD de gestión de usuarios: Registrar usuario, iniciar sesión, editar perfil y eliminar cuenta
 
 Pasos para Ejecutar
 1. Clona el repositorio.
